@@ -18,19 +18,19 @@ module.exports = function (passport) {
   passport.use(new InstagramStrategy({
     clientID: Auth.clientId,
     clientSecret: Auth.clientSecret,
-    callbackURL: "http://localhost:8000/auth/instagram/callback"
+    callbackURL: "http://localhost:8000"
     },
 //____________________________________________________________________________
 //If User isn't stored in our database, create a new user and store the Instagram ID in our database
 
     function(accessToken, refreshToken, profile, done) {
-      db.model('User').fetchById({
+      db.model('User').fetchById({ // redo to fetch by insta id
         instagram_id: profile.id
       }).then(function(user) {
         if (!user) {
         // if user does not exist in our database
           var user = db.model('User').newUser({
-            instagram_id: profile.id;
+            instagram_id: profile.id
           }).save();
           return done(null, user);
         } else {
